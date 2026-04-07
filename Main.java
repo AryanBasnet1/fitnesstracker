@@ -10,17 +10,17 @@ import java.util.Scanner;
 public class Main{
 public static void main(String[] args) {
 System.out.println("Hello");
-ArrayList<Food> foods = new ArrayList<>();
-foods.add(new Food("Eggs", 150));
-foods.add(new Food("Daal", 300));
-foods.add(new Food("Meat",450));
+
+
+
 /*
 for(Food f : foods){
 f.getFoodName();
  f.getCalories();
-}
+}it is
 */
 float  totalCalories=0;
+ArrayList<Food> foods = Food.getfFoods();
 
 Scanner tx = new Scanner(System.in);
 System.out.println("Enter the food name:");
@@ -50,6 +50,7 @@ workouts.add(new Workout("Stairs",100,"Medium"));
 //String userworkout = tx.nextLine();
   float caloriesRemaining;
 int caloriesBurned =0;
+
 for(Workout w : workouts){
   
   caloriesBurned = w.getCalories();
