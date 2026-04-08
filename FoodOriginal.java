@@ -51,8 +51,6 @@ public void showFoodList(ArrayList<Food> foods){
         selectedFoods.add(f);
         System.out.println(f.getFoodName() + " added!");
     }
-
-    // NEW: return total calories of everything selected
     public int getTotalCalories() {
         int total = 0;
         for (Food f : selectedFoods) total += f.getCalories();
