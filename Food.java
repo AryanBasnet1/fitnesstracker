@@ -1,61 +1,79 @@
-/*
+package projectcode;
 
-Create a list of foods
-Add each food with its name and calories into the list
-User types a food name
-Loop through the list and find the matching food
-Display its calories
-
-*/
-
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
+public class Food 
+{
+private double totalCalories;
+private Map<FoodList, Double> selectedFood;
 
-public class Food {
-String foodName;
-int calories;
-    private static ArrayList<Food> selectedFoods = new ArrayList<>();
-
-public Food(String foodName , int calories){
-    this.foodName = foodName;
-    this.calories = calories;
-}
-public String getFoodName(){
-    return foodName;
-}
-public int getCalories(){
-    return calories;
-}
-public static ArrayList<Food> getfFoods(){
-    ArrayList<Food> foods = new ArrayList<>();
-    foods.add(new Food("Eggs" , 150));
-    foods.add(new Food("Daal" , 150));
-    foods.add(new Food("Meat" , 150));
-    foods.add(new Food("Rice" , 150));
-    foods.add(new Food("Chicken" , 150));
-return foods;
-
-
-}
-public void showFoodList(ArrayList<Food> foods){
-    System.out.println("-------Avaialbale foods are:");
-    for(Food f: foods){
-        System.out.println(f.getFoodName() +  " -" + f.getCalories() +"- "+ "cal/100g");
-    }
-
-
-}
-    public void selectFood(Food f) {
-        selectedFoods.add(f);
-        System.out.println(f.getFoodName() + " added!");
-    }
-
-    // NEW: return total calories of everything selected
-    public int getTotalCalories() {
-        int total = 0;
-        for (Food f : selectedFoods) total += f.getCalories();
-        return total;
-    }
+public Food()
+{ //normal constructor with some defaults
+	this.totalCalories = 0;
+	 selectedFood = new HashMap<>();
+	
 }
 
+
+public void selectFood(FoodList food, double amount)
+{
+	amount = Math.round(amount * 10.0)/10.0;
+	if(food == null || amount < 0.0)
+	{
+		return;
+	}
+	
+	selectedFood.put(food,  (selectedFood.getOrDefault(food,  0.0) + amount));
+	this.totalCalories += (amount * food.getCaloriesPerGram());
+	
+}
+
+
+public boolean removeFood(FoodList food, double amountToRemove)
+{
+	amountToRemove = Math.round(amountToRemove * 10.0)/10.0;
+	if(food == null || amountToRemove < 0.0)
+	{
+		return false;
+	}
+	
+	 double currentAmount = selectedFood.getOrDefault(food, 0.0);
+     if (currentAmount == 0.0) 
+     {
+    	return false; 
+     }
+    	 
+     if (amountToRemove > currentAmount) 
+     {
+         return false;
+     }
+     else if(amountToRemove == currentAmount)
+     {
+    	 selectedFood.put(food, currentAmount - amountToRemove);
+    	 selectedFood.remove(food);
+         totalCalories -= food.getCaloriesPerGram() * amountToRemove;
+     }
+     else 
+     {
+    	 selectedFood.put(food, currentAmount - amountToRemove);
+         totalCalories -= food.getCaloriesPerGram() * amountToRemove;
+     }
+	return true;
+}
+
+
+
+public double getTotalCalories()
+{ //round to 1 decimal place
+	return (Math.round(this.totalCalories * 10.0) / 10.0);
+}
+
+
+public Map<FoodList, Double> getAllFood()
+{ //returns the list of all the food
+	return this.selectedFood;
+}
+
+}
