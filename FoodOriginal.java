@@ -1,5 +1,4 @@
-@@ -1,27 +1,61 @@
-/*
+/*@@ -1,27 +1,61 @@
 
 Create a list of foods
 Add each food with its name and calories into the list
@@ -7,7 +6,7 @@ User types a food name
 Loop through the list and find the matching food
 Display its calories
 
-*/
+
 
 import java.util.ArrayList;
 
@@ -57,3 +56,10 @@ public void showFoodList(ArrayList<Food> foods){
         return total;
     }
 }
+
+
+
+
+
+
+*/
