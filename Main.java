@@ -1,93 +1,102 @@
-/*
-User types a food name
-→ App finds that food and shows its calories
-→ App shows a workout suggestion with how many calories it burns
-→ App calculates how much is left unburned
-→ App gives a fitness rank based on effort level of the workout
-*/
 import java.util.ArrayList;
 import java.util.Scanner;
-public class Main{
-public static void main(String[] args) {
-System.out.println("Hello");
 
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Food food = new Food("", 0);
+        Workout workout = new Workout("", 0);
 
+        ArrayList<Food> foodList = Food.getfFoods();
+        ArrayList<Workout> workoutList = Workout.getWorkouts();
 
-/*
-for(Food f : foods){
-f.getFoodName();
- f.getCalories();
-}it is
-*/
-float  totalCalories=0;
-ArrayList<Food> foods = Food.getfFoods();
+        int choice = -1;
 
-Scanner tx = new Scanner(System.in);
-System.out.println("Enter the food name:");
-String userFood = tx.nextLine();
-boolean foodFound = false;
-for(Food f : foods){
-  if(f.getFoodName().equalsIgnoreCase(userFood)){
-    foodFound = true;
-    System.out.println("Food:"+ f.getFoodName());
-  System.out.println("Enter the quantity in grams:");
-  float quantity = tx.nextInt();
-  totalCalories= (quantity/100f)*f.getCalories();
-  System.out.println("Total Calories:" + totalCalories);
-  }
-}
-  if(!foodFound){
-    System.out.println("Sorry"+userFood +"not found in database:");
-    return;
-  }
-  
-  
+        while (choice != 3) {
+            System.out.println("\n======= Fitness Tracker =======");
+            System.out.println("1. Food Menu");
+            System.out.println("2. Workout Menu");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice: ");
 
-ArrayList<Workout> workouts = new ArrayList<>();
-workouts.add(new Workout("Walking", 150,"Low"));
-workouts.add(new Workout("Stairs",100,"Medium"));
-//System.out.println("Enter the workout name:");
-//String userworkout = tx.nextLine();
-  float caloriesRemaining;
-int caloriesBurned =0;
+            try {
+                choice = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                continue;
+            }
 
-for(Workout w : workouts){
-  
-  caloriesBurned = w.getCalories();
-if(totalCalories<1000){
-  if(totalCalories<1000 && w.getEffort().equalsIgnoreCase("Low")){
-System.out.println("Suggested Wokrout:"+ w.getName());
- System.out.println("Calories burned:"+ w.getCalories()); 
-   caloriesRemaining = totalCalories - w.getCalories();
- if(caloriesRemaining>0){
-System.out.println("Remaining calories" +":"+caloriesRemaining);  
-  }else{
-    System.out.println("Fully burned -_-");
-  }
-    
-}
-}
-else if(totalCalories<3000){
-  if(totalCalories>1000 && w.getEffort().equalsIgnoreCase("Medium")){
-    System.out.println("Suggested Workout:"+ w.getName());
-    System.out.println("Calories Burned:"+ w.getCalories());
-  caloriesRemaining = totalCalories - w.getCalories();
-  if(caloriesRemaining>0){
-System.out.println("Remaining calories" +":"+caloriesRemaining);  
-  }else{
-    System.out.println("Fully burned -_-");
-  }
-    
-}
+            switch (choice) {
+                case 1:
+                    // Food Menu
+                    food.showFoodList(foodList);
+                    System.out.print("Enter the food name to add: ");
+                    String foodInput = scanner.nextLine().trim();
 
+                    boolean foodFound = false;
+                    for (Food f : foodList) {
+                        if (f.getFoodName().equalsIgnoreCase(foodInput)) {
+                            food.selectFood(f);
+                            foodFound = true;
+                            break;
+                        }
+                    }
 
-}
+                    if (!foodFound) {
+                        System.out.println("Food not found. Please try again.");
+                    }
 
-FitnessRank fr = new FitnessRank(caloriesBurned);
-System.out.println("Total Calories Consumed: " + totalCalories);
-System.out.println("Calories Burned: " + caloriesBurned);
-System.out.println("Net Calories: " + (totalCalories - caloriesBurned));
-System.out.println("Fitness Rank: " + fr.getRank());
-}
-}
+                    System.out.println("Total Calories Consumed: " + food.getTotalCalories() + " cal");
+                    break;
+
+                case 2:
+                    // Workout Menu
+                    workout.showWorkoutList(workoutList);
+                    System.out.print("Enter the workout name to add: ");
+                    String workoutInput = scanner.nextLine().trim();
+
+                    boolean workoutFound = false;
+                    for (Workout w : workoutList) {
+                        if (w.getWorkoutName().equalsIgnoreCase(workoutInput)) {
+                            workout.selectWorkout(w);
+                            workoutFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!workoutFound) {
+                        System.out.println("Workout not found. Please try again.");
+                    }
+
+                    int totalBurned = workout.getTotalCaloriesBurned();
+                    System.out.println("Total Calories Burned: " + totalBurned + " cal");
+
+                    // Use FitnessRank to rank the user
+                    FitnessRank rank = new FitnessRank(totalBurned);
+                    System.out.println("Fitness Rank: " + rank.getRank());
+                    break;
+
+                case 3:
+                    // Summary on exit
+                    System.out.println("\n======= Session Summary =======");
+                    System.out.println("Foods consumed:");
+                    for (Food f : Food.getfFoods()) {
+                        // just show selected ones via total
+                    }
+                    System.out.println("Total Calories Consumed: " + food.getTotalCalories() + " cal");
+                    System.out.println("Total Calories Burned:   " + workout.getTotalCaloriesBurned() + " cal");
+                    int net = food.getTotalCalories() - workout.getTotalCaloriesBurned();
+                    System.out.println("Net Calories:            " + net + " cal");
+                    FitnessRank finalRank = new FitnessRank(workout.getTotalCaloriesBurned());
+                    System.out.println("Final Fitness Rank: " + finalRank.getRank());
+                    System.out.println("Goodbye!");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+            }
+        }
+
+        scanner.close();
+    }
 }
